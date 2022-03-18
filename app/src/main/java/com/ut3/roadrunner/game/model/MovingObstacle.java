@@ -1,6 +1,7 @@
 package com.ut3.roadrunner.game.model;
 
 import android.graphics.Point;
+import android.util.Log;
 
 public class MovingObstacle extends Obstacle {
 
@@ -14,12 +15,16 @@ public class MovingObstacle extends Obstacle {
     }
 
     @Override
-    public void move(){
-        super.move();
+    public void move(int speed){
+        super.move(speed);
         if (this.direction.equals(Direction.LEFT)){
             this.x = this.x - (GameObject.STEP * this.speedMultiplier);
         } else {
             this.x = this.x + (GameObject.STEP * this.speedMultiplier);
+        }
+        if (this.x + this.width <= 0 || this.x - this.width >= windowSize.x) {
+            Log.d("ZOMBIE" ,"killing a zombie lol");
+            this.isAlive = false;
         }
     }
 

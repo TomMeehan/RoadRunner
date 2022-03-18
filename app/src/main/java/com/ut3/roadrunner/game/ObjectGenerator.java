@@ -1,6 +1,7 @@
 package com.ut3.roadrunner.game;
 
 import android.graphics.Point;
+import android.util.Log;
 
 import com.ut3.roadrunner.R;
 import com.ut3.roadrunner.game.model.Bonus;
@@ -18,11 +19,16 @@ import java.util.stream.IntStream;
 
 public class ObjectGenerator {
 
+    private final int OBSTACLE_ASSET = R.drawable.ic_rock;
+    private final int SPEED_BOOST_ASSET = R.drawable.ic_speed_boost;
+    private final int SCORE_BOOST_ASSET = R.drawable.ic_dollar;
+    private final int MOVING_OBSTACLE_ASSET = R.drawable.ic_zombie;
+
+
     private final int N_COLUMNS = 4;
 
-    private final int OBSTACLE_SPAWN_THRESHOLD = 30;
-
-    private final int MOVING_OBSTACLE_SPAWN_THRESHOLD = 80;
+    private final int BONUS_SPAWN_THRESHOLD = 10;
+    private final int MOVING_OBSTACLE_SPAWN_THRESHOLD = 90;
 
     private final Point windowSize;
 
@@ -57,17 +63,17 @@ public class ObjectGenerator {
         Random rand = new Random();
         int spawnValue = rand.nextInt(100);
 
-        if (spawnValue > OBSTACLE_SPAWN_THRESHOLD){
-            object = generateObstacle();
-        } else {
+        if (spawnValue > BONUS_SPAWN_THRESHOLD){
             object = generateBonus();
+        } else {
+            object = generateObstacle();
         }
 
         return object;
     }
 
     private Obstacle generateObstacle(){
-        return new Obstacle(R.drawable.ic_rock,0, 0, SIZE, SIZE, windowSize);
+        return new Obstacle(OBSTACLE_ASSET,0, 0, SIZE, SIZE, windowSize);
     }
 
     private MovingObstacle generateMovingObstacle(){
@@ -78,10 +84,10 @@ public class ObjectGenerator {
 
         Direction direction = randDir == 0 ? Direction.RIGHT : Direction.LEFT;
         int speedMultiplier = randSpeed == 0 ? 1 : 2;
-        int x = direction.equals(Direction.LEFT) ? 0 - SIZE : this.windowSize.x;
+        int x = direction.equals(Direction.RIGHT) ? 0 - SIZE : this.windowSize.x;
 
 
-        return new MovingObstacle(R.drawable.ic_rock, x,0, SIZE, SIZE, direction, speedMultiplier, windowSize);
+        return new MovingObstacle(MOVING_OBSTACLE_ASSET, x,0, SIZE, SIZE, direction, speedMultiplier, windowSize);
     }
 
     private Bonus generateBonus(){
@@ -91,11 +97,19 @@ public class ObjectGenerator {
 
         int scoreMultiplier = 1;
         int speedMultiplier = 1;
+        int resId;
+        int scoreToAdd = 1000;
 
-        if (randType == 0) scoreMultiplier = 2;
-        else speedMultiplier = 2;
+        if (randType == 0){
+            scoreMultiplier = 2;
+            resId = SCORE_BOOST_ASSET;
+        }
+        else{
+            speedMultiplier = 2;
+            resId = SPEED_BOOST_ASSET;
+        }
 
-        return new Bonus(R.drawable.ic_rock, 0, 0, SIZE, SIZE, scoreMultiplier, speedMultiplier, windowSize);
+        return new Bonus(resId, 0, 0, SIZE, SIZE, scoreMultiplier, speedMultiplier, scoreToAdd, windowSize);
 
     }
 
@@ -112,4 +126,7 @@ public class ObjectGenerator {
 
     }
 
+    public int getSIZE() {
+        return SIZE;
+    }
 }
