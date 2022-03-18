@@ -1,11 +1,14 @@
 package com.ut3.roadrunner.game;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -88,6 +91,8 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     public void checkCollisions(){
         // MAXIME IF COLLISION
         //player.handleCollision(object);
+        if( false ) // obstacle
+        endGame();
     }
 
     public void setGameSpeed(int multiplier) {
@@ -138,4 +143,30 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         sm.unregisterListener(gyroSensor, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void endGame(){
+        SharedPreferences sharedScore = getContext().getSharedPreferences("score",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedScore.edit();
+        editor.putInt("score", player.getScore());
+        editor.apply();
+        Intent intent = new Intent(getContext(), EndingActivity.class);
+        getContext().startActivity(intent);
+
+        boolean retry = true;
+        while (retry) {
+            try {
+                drawThread.setRunning(false);
+                drawThread.join();
+                updateThread.setRunning(false);
+                updateThread.join();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            retry = false;
+        }
+    }
 }

@@ -36,6 +36,7 @@ public class UpdateThread extends Thread {
         @Override
         public void run() {
             if (running){
+
                 updateState();
                 checkCollisions();
                 updateHandler.postDelayed(this, updateTimer);
