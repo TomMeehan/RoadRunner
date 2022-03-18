@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -28,6 +29,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
+
+    private final static int BASE_GAME_SPEED = 1;
 
     private final DrawThread drawThread;
     private final UpdateThread updateThread;
@@ -63,7 +66,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
         //TESTS
         this.objects.add(new Obstacle(R.drawable.ic_rock, windowSize.x/2, 0, 200, 200));
-        this.setGameSpeed(3);
+        //this.setGameSpeed(GameView.BASE_GAME_SPEED);
     }
 
     @Override
@@ -107,8 +110,9 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
         } else if (o instanceof Bonus) {
             Bonus bonus = (Bonus) o;
+            Log.d("handleCollision", "BONUS");
 
-            player.addScore(bonus.getScoreToAdd());
+            /*player.addScore(bonus.getScoreToAdd());
 
             player.setScoreMultiplier(bonus.getScoreMultiplier());
             Handler endScoreBonusHandler = new Handler();
@@ -117,7 +121,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
                 public void run() {
                     player.setScoreMultiplier(Player.BASE_SCORE_MULTIPLIER);
                 }
-            }, Bonus.DURATION);
+            }, Bonus.DURATION);*/
 
             this.setGameSpeed(bonus.getSpeedMultiplier());
             Handler endSpeedBonusHandler = new Handler();

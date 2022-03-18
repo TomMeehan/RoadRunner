@@ -55,7 +55,8 @@ public class DrawThread extends Thread{
     }
 
     public void setRefreshRate(int multiplier){
-        this.drawTimer = this.drawTimer * 1/multiplier;
+        if (this.drawTimer != BASE_DRAW_TIMER)
+            this.drawTimer = this.drawTimer * 1/multiplier;
     }
 
     @Override
