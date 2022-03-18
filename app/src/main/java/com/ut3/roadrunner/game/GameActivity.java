@@ -5,15 +5,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.ut3.roadrunner.R;
+
 public class GameActivity extends Activity {
 
     private GameView gameView;
     private SensorManager sm = null;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +29,12 @@ public class GameActivity extends Activity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
+
+        //musique
+        mediaPlayer = MediaPlayer.create(this, R.raw.bigrock);
+        mediaPlayer.setVolume(100,100);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
 
         gameView = new GameView(this, size);
         int score = gameView.getPlayer().getScore();
@@ -49,6 +59,8 @@ public class GameActivity extends Activity {
     @Override
     protected void onStop(){
         gameView.stopSensors(sm);
+        mediaPlayer.stop();
+        mediaPlayer.release();
         super.onStop();
     }
 

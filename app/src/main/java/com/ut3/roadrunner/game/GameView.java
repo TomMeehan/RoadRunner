@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -49,6 +50,8 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     private LightSensor lightSensor;
 
     private int gameSpeed = 1;
+
+
 
     public GameView(Context context, Point windowSize){
         super(context);
