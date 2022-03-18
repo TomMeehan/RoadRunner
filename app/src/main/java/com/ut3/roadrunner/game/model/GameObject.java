@@ -1,6 +1,6 @@
 package com.ut3.roadrunner.game.model;
 
-public class GameObject {
+public abstract class GameObject {
 
     public static final int STEP = 5;
 
@@ -16,6 +16,10 @@ public class GameObject {
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    public void move(){
+        this.move(Direction.DOWN);
     }
 
     public void move(Direction direction){
