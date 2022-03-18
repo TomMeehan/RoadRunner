@@ -13,6 +13,7 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.ut3.roadrunner.R;
 import com.ut3.roadrunner.game.model.GameObject;
+import com.ut3.roadrunner.game.model.Player;
 import com.ut3.roadrunner.game.threads.DrawThread;
 import com.ut3.roadrunner.game.threads.UpdateThread;
 
@@ -24,6 +25,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
     private final DrawThread drawThread;
     private final UpdateThread updateThread;
+    private Player player;
 
     private Point windowSize;
 
@@ -42,6 +44,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         updateThread = new UpdateThread(this);
 
         this.objects = new LinkedList<>();
+        this.player = new Player(R.drawable.ic_purzen_a_cartoon_moon_rocket, windowSize.x/2, windowSize.y/2, 100, 100, this);
 
         //TESTS
         this.objects.add(new GameObject(R.drawable.ic_rock, windowSize.x/2, 0, 200, 200));
@@ -60,7 +63,10 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
                 canvas.translate(0, 0);
                 graphics.draw(canvas);
             }
-
+            VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), this.player.getResId(), null);
+            graphics.setBounds(this.player.getX() - this.player.getWidth()/2, this.player.getY(),this.player.getX() + this.player.getWidth()/2, this.player.getY() + this.player.getHeight());
+            canvas.translate(0, 0);
+            graphics.draw(canvas);
         }
     }
 
