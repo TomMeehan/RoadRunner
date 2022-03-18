@@ -4,8 +4,12 @@ import android.graphics.Point;
 
 public class Player extends GameObject {
 
+    public final static int BASE_SCORE_MULTIPLIER = 1;
+
     private int score;
+    private int scoreMultiplier = BASE_SCORE_MULTIPLIER;
     private int stepMultiplier = 2;
+    private float vision;
 
     public Player(int resId, int x, int y, int width, int height, Point windowSize) {
         super(resId, x, y, width, height, windowSize);
@@ -33,11 +37,27 @@ public class Player extends GameObject {
             }
     }
 
+    public float getVision() {
+        return vision;
+    }
+
+    public void setVision(float luminosite) {
+        this.vision = luminosite;
+    }
+
     public int getScore(){
         return this.score;
     }
 
     public void addScore(int scoreToAdd){
-        this.score += scoreToAdd;
+        this.score += scoreToAdd * this.scoreMultiplier;
+    }
+
+    public int getScoreMultiplier() {
+        return scoreMultiplier;
+    }
+
+    public void setScoreMultiplier(int scoreMultiplier) {
+        this.scoreMultiplier = scoreMultiplier;
     }
 }

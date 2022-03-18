@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -23,10 +26,14 @@ import com.ut3.roadrunner.game.model.GameObject;
 import com.ut3.roadrunner.game.model.MovingObstacle;
 import com.ut3.roadrunner.game.model.Player;
 import com.ut3.roadrunner.game.model.Obstacle;
+import com.ut3.roadrunner.game.model.Player;
 import com.ut3.roadrunner.game.threads.DrawThread;
 import com.ut3.roadrunner.game.threads.UpdateThread;
 import com.ut3.roadrunner.sensors.GyroSensor;
+import com.ut3.roadrunner.sensors.LightSensor;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,8 +49,39 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     private List<GameObject> objects;
 
     private GyroSensor gyroSensor;
+    private LightSensor lightSensor;
 
     private int gameSpeed = 1;
+
+    private MediaRecorder mediaRecorder;
+    private File audioInput;
+    private Handler micHandler;
+    private final int TIER2_SPEED_AMP = 10000;
+    private final int TIER3_SPEED_AMP = 20000;
+    private Runnable micThread = new Runnable() {
+        @Override
+        public void run() {
+            if (mediaRecorder != null) {
+                double amplitude = mediaRecorder.getMaxAmplitude();
+                if (amplitude > TIER3_SPEED_AMP) {
+                    setGameSpeed(3);
+                    Handler handler = new Handler();
+                    handler.postDelayed(resetSpeedThread, 10000);
+                } else if (amplitude > TIER2_SPEED_AMP) {
+                    setGameSpeed(2);
+                    Handler handler = new Handler();
+                    handler.postDelayed(resetSpeedThread, 10000);
+                }
+            }
+            micHandler.postDelayed(this, 1000/60);
+        }
+    };
+    private Runnable resetSpeedThread = new Runnable() {
+        @Override
+        public void run() {
+            resetGameSpeed();
+        }
+    };
 
     public GameView(Context context, Point windowSize){
         super(context);
@@ -64,7 +102,21 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         this.objects = new LinkedList<>();
         this.player = new Player(R.drawable.ic_black_car, windowSize.x/2 - 50 , windowSize.y/2  - 50,  generator.getSIZE()/2, generator.getSIZE()/2, windowSize);
 
-        this.gyroSensor = new GyroSensor(this.player);
+        //Media register (for mic)
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        audioInput = new File(context.getFilesDir() + "/roadrunner.3gp");
+        mediaRecorder.setOutputFile(audioInput.getAbsolutePath());
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (IOException e) {
+            Log.d("GAME", e.getMessage());
+        }
+        micHandler = new Handler();
+        micThread.run();
 
         //TESTS
     }
@@ -72,6 +124,10 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+
+        Path path = new Path();
+        path.addCircle(this.player.getX() + this.player.getWidth()/2,this.player.getY() - this.player.getHeight()/2, this.player.getVision(), Path.Direction.CW);
+        canvas.clipPath(path);
 
         if (canvas != null) {
             canvas.drawColor(Color.rgb(30,30,30));
@@ -84,6 +140,9 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), this.player.getResId(), null);
             graphics.setBounds(this.player.getX(), this.player.getY(),this.player.getX() + this.player.getWidth(), this.player.getY() + this.player.getHeight());
             canvas.translate(0, 0);
+            Paint score_text = new Paint(Color.rgb(255,0,0));
+            score_text.setTextSize(100);
+            canvas.drawText("Score "+String.valueOf(this.player.getScore()), (this.windowSize.x/3), 100,  score_text);
             graphics.draw(canvas);
         }
     }
@@ -112,23 +171,13 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             Bonus bonus = (Bonus) o;
             Log.d("handleCollision", "BONUS");
 
-            player.addScore(bonus.getScoreToAdd());
-/*
+
             player.setScoreMultiplier(bonus.getScoreMultiplier());
             Handler endScoreBonusHandler = new Handler();
             endScoreBonusHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     player.setScoreMultiplier(Player.BASE_SCORE_MULTIPLIER);
-                }
-            }, Bonus.DURATION);*/
-
-            this.setGameSpeed(bonus.getSpeedMultiplier());
-            Handler endSpeedBonusHandler = new Handler();
-            endSpeedBonusHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    resetGameSpeed();
                 }
             }, Bonus.DURATION);
         }
@@ -190,11 +239,16 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     public void initializeSensors(SensorManager sm){
         this.gyroSensor = new GyroSensor(this.player);
         Sensor mMagneticField = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sm.registerListener(gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
+        sm.registerListener(this.gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
+
+        Sensor mLightSensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
+        this.lightSensor = new LightSensor(this.player,mLightSensor.getMaximumRange());
+        sm.registerListener(this.lightSensor,mLightSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void stopSensors(SensorManager sm){
-        sm.unregisterListener(gyroSensor, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sm.unregisterListener(this.gyroSensor, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sm.unregisterListener(this.lightSensor,sm.getDefaultSensor(Sensor.TYPE_LIGHT));
     }
 
     public Player getPlayer() {
@@ -222,5 +276,11 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             }
             retry = false;
         }
+
+        //On ferme le MediaRecorder et on supprime le fichier créé
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        mediaRecorder = null;
+        audioInput.delete();
     }
 }
