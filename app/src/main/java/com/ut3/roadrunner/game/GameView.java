@@ -120,15 +120,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
                     player.setScoreMultiplier(Player.BASE_SCORE_MULTIPLIER);
                 }
             }, Bonus.DURATION);*/
-
-            this.setGameSpeed(bonus.getSpeedMultiplier());
-            Handler endSpeedBonusHandler = new Handler();
-            endSpeedBonusHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    resetGameSpeed();
-                }
-            }, Bonus.DURATION);
         }
     }
 
