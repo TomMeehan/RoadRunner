@@ -172,8 +172,8 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             endGame();
         } else if (o instanceof Bonus) {
             Bonus bonus = (Bonus) o;
-
             player.setScoreMultiplier(bonus.getScoreMultiplier());
+            this.objects.remove(o);
             Handler endScoreBonusHandler = new Handler();
             endScoreBonusHandler.postDelayed(new Runnable() {
                 @Override

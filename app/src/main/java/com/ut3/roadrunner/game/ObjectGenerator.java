@@ -49,6 +49,9 @@ public class ObjectGenerator {
         } else {
             int nObjects = rand.nextInt(2)+1;
 
+            int threeChance = rand.nextInt(10);
+            if (threeChance == 0) nObjects++;
+
             List<GameObject> newObjects = new LinkedList<>();
             for (int i = 0; i < nObjects; i++){
                 newObjects.add(generateObject());

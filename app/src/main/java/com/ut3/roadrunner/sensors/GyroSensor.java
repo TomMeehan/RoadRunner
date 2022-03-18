@@ -37,18 +37,18 @@ public class GyroSensor implements SensorEventListener {
                 float x = values[0];
                 float y = values[1];
 
-                if ( abs(x - firstValues[0]) > 2 && x>firstValues[0] ) {
+                if ( abs(x - firstValues[0]) > 1.5 && x>firstValues[0] ) {
                    Log.d("Gyro", String.valueOf(Direction.LEFT));
                    this.player.move(Direction.LEFT);
-                }else if ( abs(x - firstValues[0]) >2 && x<firstValues[0]) {
+                }else if ( abs(x - firstValues[0]) > 1.5 && x<firstValues[0]) {
                     Log.d("Gyro", String.valueOf(Direction.RIGHT));
                     this.player.move(Direction.RIGHT);
                 }
 
-                if ( abs(y - firstValues[1]) > 2 && y < firstValues[1] ) {
+                if ( abs(y - firstValues[1]) > 1.5 && y < firstValues[1] ) {
                     Log.d("Gyro", String.valueOf(Direction.UP));
                     this.player.move(Direction.UP);
-                }else if ( abs(y - firstValues[1]) > 2 && y > firstValues[1] ) {
+                }else if ( abs(y - firstValues[1]) > 1.5 && y > firstValues[1] ) {
                     Log.d("Gyro", String.valueOf(Direction.DOWN));
                     this.player.move(Direction.DOWN);
                 }
