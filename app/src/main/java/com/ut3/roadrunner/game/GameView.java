@@ -1,8 +1,12 @@
 package com.ut3.roadrunner.game;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Sensor;
@@ -22,9 +26,11 @@ import com.ut3.roadrunner.game.model.GameObject;
 import com.ut3.roadrunner.game.model.MovingObstacle;
 import com.ut3.roadrunner.game.model.Player;
 import com.ut3.roadrunner.game.model.Obstacle;
+import com.ut3.roadrunner.game.model.Player;
 import com.ut3.roadrunner.game.threads.DrawThread;
 import com.ut3.roadrunner.game.threads.UpdateThread;
 import com.ut3.roadrunner.sensors.GyroSensor;
+import com.ut3.roadrunner.sensors.LightSensor;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +49,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     private List<GameObject> objects;
 
     private GyroSensor gyroSensor;
+    private LightSensor lightSensor;
 
     private int gameSpeed = 1;
 
@@ -95,7 +102,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         this.objects = new LinkedList<>();
         this.player = new Player(R.drawable.ic_car, windowSize.x/2 - 50 , windowSize.y/2  - 50,  generator.getSIZE()/2, generator.getSIZE()/2, windowSize);
 
-        this.gyroSensor = new GyroSensor(this.player);
 
         //Media register (for mic)
         mediaRecorder = new MediaRecorder();
@@ -120,6 +126,10 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
+        Path path = new Path();
+        path.addCircle(this.player.getX() + this.player.getWidth()/2,this.player.getY() - this.player.getHeight()/2, this.player.getVision(), Path.Direction.CW);
+        canvas.clipPath(path);
+
         if (canvas != null) {
             canvas.drawColor(Color.DKGRAY);
             for (GameObject obj : objects){
@@ -131,6 +141,9 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), this.player.getResId(), null);
             graphics.setBounds(this.player.getX(), this.player.getY(),this.player.getX() + this.player.getWidth(), this.player.getY() + this.player.getHeight());
             canvas.translate(0, 0);
+            Paint score_text = new Paint(Color.rgb(255,0,0));
+            score_text.setTextSize(100);
+            canvas.drawText("Score "+String.valueOf(this.player.getScore()), (this.windowSize.x/3), 100,  score_text);
             graphics.draw(canvas);
         }
     }
@@ -152,15 +165,15 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
     public void handleCollision(GameObject o) {
         if (o instanceof Obstacle) {
-
+            endGame();
         } else if (o instanceof MovingObstacle) {
-
+            endGame();
         } else if (o instanceof Bonus) {
             Bonus bonus = (Bonus) o;
             Log.d("handleCollision", "BONUS");
 
-            /*player.addScore(bonus.getScoreToAdd());
-
+            player.addScore(bonus.getScoreToAdd());
+/*
             player.setScoreMultiplier(bonus.getScoreMultiplier());
             Handler endScoreBonusHandler = new Handler();
             endScoreBonusHandler.postDelayed(new Runnable() {
@@ -169,15 +182,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
                     player.setScoreMultiplier(Player.BASE_SCORE_MULTIPLIER);
                 }
             }, Bonus.DURATION);*/
-
-            this.setGameSpeed(bonus.getSpeedMultiplier());
-            Handler endSpeedBonusHandler = new Handler();
-            endSpeedBonusHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    resetGameSpeed();
-                }
-            }, Bonus.DURATION);
         }
     }
 
@@ -237,11 +241,42 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     public void initializeSensors(SensorManager sm){
         this.gyroSensor = new GyroSensor(this.player);
         Sensor mMagneticField = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sm.registerListener(gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
+        sm.registerListener(this.gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
+
+        Sensor mLightSensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
+        this.lightSensor = new LightSensor(this.player,mLightSensor.getMaximumRange());
+        sm.registerListener(this.lightSensor,mLightSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void stopSensors(SensorManager sm){
-        sm.unregisterListener(gyroSensor, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sm.unregisterListener(this.gyroSensor, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sm.unregisterListener(this.lightSensor,sm.getDefaultSensor(Sensor.TYPE_LIGHT));
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void endGame(){
+        SharedPreferences sharedScore = getContext().getSharedPreferences("score",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedScore.edit();
+        editor.putInt("score", player.getScore());
+        editor.apply();
+        Intent intent = new Intent(getContext(), EndingActivity.class);
+        getContext().startActivity(intent);
+
+        boolean retry = true;
+        while (retry) {
+            try {
+                drawThread.setRunning(false);
+                drawThread.join();
+                updateThread.setRunning(false);
+                updateThread.join();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            retry = false;
+        }
+    }
 }
