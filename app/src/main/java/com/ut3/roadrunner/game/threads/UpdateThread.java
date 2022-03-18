@@ -73,7 +73,12 @@ public class UpdateThread extends Thread {
             this.canGenerate = false;
             this.generatorHandler.postDelayed(resetCanGenerate, this.generationTimer);
         }
-        this.gameView.getPlayer().addScore(BASE_SCORE_PER_TICK);
+        if(this.gameView.getPlayer().getVision() <450){
+            this.gameView.getPlayer().addScore(BASE_SCORE_PER_TICK*2);
+        }else{
+            this.gameView.getPlayer().addScore(BASE_SCORE_PER_TICK);
+        }
+
     }
 
     private void checkCollisions(){
