@@ -125,7 +125,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        Path path = new Path();
+       Path path = new Path();
         path.addCircle(this.player.getX() + this.player.getWidth()/2,this.player.getY() - this.player.getHeight()/2, this.player.getVision(), Path.Direction.CW);
         canvas.clipPath(path);
 
@@ -169,8 +169,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             endGame();
         } else if (o instanceof Bonus) {
             Bonus bonus = (Bonus) o;
-            Log.d("handleCollision", "BONUS");
-
 
             player.setScoreMultiplier(bonus.getScoreMultiplier());
             Handler endScoreBonusHandler = new Handler();
