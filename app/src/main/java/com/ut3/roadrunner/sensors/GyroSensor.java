@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.util.Log;
 
+import com.ut3.roadrunner.game.model.Direction;
 import com.ut3.roadrunner.game.model.Player;
 
 
@@ -38,15 +39,15 @@ public class GyroSensor implements SensorEventListener {
                 float z = values[2];
 
                 if ( abs(x - firstValues[0]) > 2 && x>firstValues[0] ) {
-                   Log.d("onSensorChanged", " on a penché vers la gauche");
+                   Log.d("Gyro", String.valueOf(Direction.LEFT));
                 }else if ( abs(x - firstValues[0]) >2 && x<firstValues[0]) {
-                    Log.d("onSensorChanged", " on a penché vers la droite");
+                    Log.d("Gyro", String.valueOf(Direction.RIGHT));
                 }
 
                 if ( abs(y - firstValues[1]) > 2 && y < firstValues[1] ) {
-                    Log.d("onSensorChanged", " on a penché vers l'avant");
+                    Log.d("Gyro", String.valueOf(Direction.UP));
                 }else if ( abs(y - firstValues[1]) > 2 && y > firstValues[1] ) {
-                    Log.d("onSensorChanged", " on a penché vers l'arrière");
+                    Log.d("Gyro", String.valueOf(Direction.DOWN));
                 }
 
             }
