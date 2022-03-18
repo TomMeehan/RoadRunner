@@ -2,6 +2,8 @@ package com.ut3.roadrunner.game.model;
 
 public class GameObject {
 
+    public static final int STEP = 5;
+
     private int resId;
     private int x;
     private int y;
@@ -14,6 +16,23 @@ public class GameObject {
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    public void move(Direction direction){
+        switch (direction){
+            case UP:
+                this.y = this.y - STEP;
+                break;
+            case DOWN:
+                this.y = this.y + STEP;
+                break;
+            case LEFT:
+                this.x = this.x - STEP;
+                break;
+            case RIGHT:
+                this.x = this.x + STEP;
+                break;
+        }
     }
 
     public int getResId() {

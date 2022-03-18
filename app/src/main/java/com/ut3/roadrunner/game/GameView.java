@@ -28,12 +28,17 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     public GameView(Context context, Point windowSize){
         super(context);
 
+        //Surface
+        getHolder().addCallback(this);
+        setFocusable(true);
+
         this.windowSize = windowSize;
 
         drawThread = new DrawThread(getHolder(), this);
-        updateThread = new UpdateThread();
+        updateThread = new UpdateThread(this);
 
-        obj = new GameObject(R.drawable.ic_rock, windowSize.x/2, windowSize.y/2, 100, 100);
+        obj = new GameObject(R.drawable.ic_rock, windowSize.x/2, 0, 200, 200);
+        this.setGameSpeed(3);
     }
 
     @Override
@@ -44,10 +49,19 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             Log.d("GAME", "Canvas is drawing");
             canvas.drawColor(Color.GRAY);
             VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), obj.getResId(), null);
-            graphics.setBounds(obj.getX(), obj.getY(), obj.getWidth(), obj.getHeight());
+            graphics.setBounds(obj.getX() - obj.getWidth()/2, obj.getY(),obj.getX() + obj.getWidth()/2, obj.getY() + obj.getHeight());
             canvas.translate(0, 0);
             graphics.draw(canvas);
         }
+    }
+
+    public void setGameSpeed(int multiplier) {
+        this.drawThread.setRefreshRate(multiplier);
+        this.updateThread.setRefreshRate(multiplier);
+    }
+
+    public GameObject getObj() {
+        return obj;
     }
 
     @Override

@@ -13,8 +13,8 @@ public class DrawThread extends Thread{
     private GameView gameView;
     private Canvas canvas;
     private Handler drawHandler;
-    private int drawTimer = 1000/20;
     private boolean running;
+    private int drawTimer = 1000/60;
 
 
     private Runnable doDraw = new Runnable() {
@@ -52,9 +52,13 @@ public class DrawThread extends Thread{
         }
     }
 
+    public void setRefreshRate(int multiplier){
+        this.drawTimer = this.drawTimer * 1/multiplier;
+    }
+
     @Override
     public void run(){
-        Log.d("DRAW", "running"); doDraw.run();
+        doDraw.run();
     }
 
     public boolean isRunning() {
