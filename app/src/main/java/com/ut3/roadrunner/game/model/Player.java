@@ -1,12 +1,14 @@
 package com.ut3.roadrunner.game.model;
 
+import android.graphics.Point;
+
 public class Player extends GameObject {
 
     private int score;
     private int stepMultiplier = 2;
 
-    public Player(int resId, int x, int y, int width, int height) {
-        super(resId, x, y, width, height);
+    public Player(int resId, int x, int y, int width, int height, Point windowSize) {
+        super(resId, x, y, width, height, windowSize);
         this.score = 0;
     }
 
