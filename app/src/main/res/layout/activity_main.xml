@@ -48,7 +48,7 @@
         android:id="@+id/textView"
         android:layout_width="362dp"
         android:layout_height="78dp"
-        android:text="RoadRunner"
+        android:text="Route 666"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="60sp"
