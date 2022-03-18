@@ -1,4 +1,4 @@
-package com.ut3.roadrunner;
+package com.ut3.roadrunner.game;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.ut3.roadrunner.MainActivity;
+import com.ut3.roadrunner.R;
 
 public class RulesActivity extends Activity {
 
@@ -17,7 +20,7 @@ public class RulesActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_rules);
+        this.setContentView(R.layout.activity_rules);
     }
 
 
