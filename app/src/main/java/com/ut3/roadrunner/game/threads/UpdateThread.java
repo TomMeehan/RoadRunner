@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class UpdateThread extends Thread {
 
+    private final int BASE_SCORE_PER_TICK = 1;
     private final int BASE_GENERATION_TIMER = 3000;
     private final int BASE_UPDATE_TIMER = 1000/40;
 
@@ -40,7 +41,6 @@ public class UpdateThread extends Thread {
         @Override
         public void run() {
             if (running){
-
                 updateState();
                 checkCollisions();
                 destroyDeadObjects();
@@ -73,6 +73,7 @@ public class UpdateThread extends Thread {
             this.canGenerate = false;
             this.generatorHandler.postDelayed(resetCanGenerate, this.generationTimer);
         }
+        this.gameView.getPlayer().addScore(BASE_SCORE_PER_TICK);
     }
 
     private void checkCollisions(){

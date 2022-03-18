@@ -9,10 +9,9 @@ public class Bonus extends GameObject{
     private int scoreMultiplier;
     private int scoreToAdd;
 
-    public Bonus(int resId, int x, int y, int width, int height, int scoreMultiplier, int speedMultiplier, int scoreToAdd, Point windowSize) {
+    public Bonus(int resId, int x, int y, int width, int height, int scoreMultiplier, Point windowSize) {
         super(resId, x, y, width, height, windowSize);
         this.scoreMultiplier = scoreMultiplier;
-        this.scoreToAdd = scoreToAdd;
     }
 
     @Override
@@ -31,11 +30,4 @@ public class Bonus extends GameObject{
         this.scoreMultiplier = scoreMultiplier;
     }
 
-    public int getScoreToAdd() {
-        return scoreToAdd;
-    }
-
-    public void setScoreToAdd(int scoreToAdd) {
-        this.scoreToAdd = scoreToAdd;
-    }
 }

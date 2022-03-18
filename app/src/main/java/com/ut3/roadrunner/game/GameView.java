@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -32,6 +33,8 @@ import com.ut3.roadrunner.game.threads.UpdateThread;
 import com.ut3.roadrunner.sensors.GyroSensor;
 import com.ut3.roadrunner.sensors.LightSensor;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,7 +54,35 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
     private int gameSpeed = 1;
 
-
+    private MediaRecorder mediaRecorder;
+    private File audioInput;
+    private Handler micHandler;
+    private final int TIER2_SPEED_AMP = 10000;
+    private final int TIER3_SPEED_AMP = 20000;
+    private Runnable micThread = new Runnable() {
+        @Override
+        public void run() {
+            if (mediaRecorder != null) {
+                double amplitude = mediaRecorder.getMaxAmplitude();
+                if (amplitude > TIER3_SPEED_AMP) {
+                    setGameSpeed(3);
+                    Handler handler = new Handler();
+                    handler.postDelayed(resetSpeedThread, 10000);
+                } else if (amplitude > TIER2_SPEED_AMP) {
+                    setGameSpeed(2);
+                    Handler handler = new Handler();
+                    handler.postDelayed(resetSpeedThread, 10000);
+                }
+            }
+            micHandler.postDelayed(this, 1000/60);
+        }
+    };
+    private Runnable resetSpeedThread = new Runnable() {
+        @Override
+        public void run() {
+            resetGameSpeed();
+        }
+    };
 
     public GameView(Context context, Point windowSize){
         super(context);
@@ -72,6 +103,21 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         this.objects = new LinkedList<>();
         this.player = new Player(R.drawable.ic_car, windowSize.x/2 - 50 , windowSize.y/2  - 50,  generator.getSIZE()/2, generator.getSIZE()/2, windowSize);
 
+        //Media register (for mic)
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        audioInput = new File(context.getFilesDir() + "/roadrunner.3gp");
+        mediaRecorder.setOutputFile(audioInput.getAbsolutePath());
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (IOException e) {
+            Log.d("GAME", e.getMessage());
+        }
+        micHandler = new Handler();
+        micThread.run();
 
     }
 
@@ -125,8 +171,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             Bonus bonus = (Bonus) o;
             Log.d("handleCollision", "BONUS");
 
-            player.addScore(bonus.getScoreToAdd());
-/*
+
             player.setScoreMultiplier(bonus.getScoreMultiplier());
             Handler endScoreBonusHandler = new Handler();
             endScoreBonusHandler.postDelayed(new Runnable() {
@@ -134,7 +179,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
                 public void run() {
                     player.setScoreMultiplier(Player.BASE_SCORE_MULTIPLIER);
                 }
-            }, Bonus.DURATION);*/
+            }, Bonus.DURATION);
         }
     }
 
@@ -231,5 +276,11 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             }
             retry = false;
         }
+
+        //On ferme le MediaRecorder et on supprime le fichier créé
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        mediaRecorder = null;
+        audioInput.delete();
     }
 }
