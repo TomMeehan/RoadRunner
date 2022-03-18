@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadRunner">
         <activity
+            android:name=".game.GameActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
