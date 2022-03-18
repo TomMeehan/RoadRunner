@@ -7,7 +7,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.util.Log;
 
-import com.ut3.roadrunner.model.Player;
+import com.ut3.roadrunner.game.model.Player;
+
 
 public class GyroSensor implements SensorEventListener {
 
