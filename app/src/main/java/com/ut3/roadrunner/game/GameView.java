@@ -3,6 +3,8 @@ package com.ut3.roadrunner.game;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -14,11 +16,12 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.ut3.roadrunner.R;
 import com.ut3.roadrunner.game.model.GameObject;
-import com.ut3.roadrunner.game.model.Player;
 import com.ut3.roadrunner.game.model.Obstacle;
+import com.ut3.roadrunner.game.model.Player;
 import com.ut3.roadrunner.game.threads.DrawThread;
 import com.ut3.roadrunner.game.threads.UpdateThread;
 import com.ut3.roadrunner.sensors.GyroSensor;
+import com.ut3.roadrunner.sensors.LightSensor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +38,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     private List<GameObject> objects;
 
     private GyroSensor gyroSensor;
+    private LightSensor lightSensor;
 
     public GameView(Context context, Point windowSize){
         super(context);
@@ -55,7 +59,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         this.objects = new LinkedList<>();
         this.player = new Player(R.drawable.ic_purzen_a_cartoon_moon_rocket, windowSize.x/2, windowSize.y/2, 100, 100);
 
-        this.gyroSensor = new GyroSensor(this.player);
 
         //TESTS
         this.objects.add(new Obstacle(R.drawable.ic_rock, windowSize.x/2, 0, 200, 200));
@@ -65,6 +68,10 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+
+        Path path = new Path();
+        path.addCircle(this.player.getX() + this.player.getWidth()/2,this.player.getY() - this.player.getHeight()/2, this.player.getVision(), Path.Direction.CW);
+        canvas.clipPath(path);
 
         if (canvas != null) {
             canvas.drawColor(Color.GRAY);
@@ -77,6 +84,9 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), this.player.getResId(), null);
             graphics.setBounds(this.player.getX() - this.player.getWidth()/2, this.player.getY(),this.player.getX() + this.player.getWidth()/2, this.player.getY() + this.player.getHeight());
             canvas.translate(0, 0);
+            Paint score_text = new Paint(Color.rgb(255,0,0));
+            score_text.setTextSize(100);
+            canvas.drawText("Score "+String.valueOf(this.player.getScore()), (this.windowSize.x/3), 100,  score_text);
             graphics.draw(canvas);
         }
     }
@@ -131,11 +141,16 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     public void initializeSensors(SensorManager sm){
         this.gyroSensor = new GyroSensor(this.player);
         Sensor mMagneticField = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sm.registerListener(gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
+        sm.registerListener(this.gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
+
+        Sensor mLightSensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
+        this.lightSensor = new LightSensor(this.player,mLightSensor.getMaximumRange());
+        sm.registerListener(this.lightSensor,mLightSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void stopSensors(SensorManager sm){
-        sm.unregisterListener(gyroSensor, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sm.unregisterListener(this.gyroSensor, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sm.unregisterListener(this.lightSensor,sm.getDefaultSensor(Sensor.TYPE_LIGHT));
     }
 
 }

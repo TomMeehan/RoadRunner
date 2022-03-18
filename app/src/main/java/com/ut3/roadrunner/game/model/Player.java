@@ -5,6 +5,8 @@ public class Player extends GameObject {
     private int score;
     private int stepMultiplier = 2;
 
+    private float vision;
+
     public Player(int resId, int x, int y, int width, int height) {
         super(resId, x, y, width, height);
         this.score = 0;
@@ -26,6 +28,14 @@ public class Player extends GameObject {
                 setX(getX() + (STEP * stepMultiplier));
                 break;
             }
+    }
+
+    public float getVision() {
+        return vision;
+    }
+
+    public void setVision(float luminosite) {
+        this.vision = luminosite;
     }
 
     public int getScore(){
