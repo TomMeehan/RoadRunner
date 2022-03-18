@@ -22,8 +22,10 @@ public class DrawThread extends Thread{
     private Runnable doDraw = new Runnable() {
         @Override
         public void run() {
-            drawCanvas();
-            drawHandler.postDelayed(this, drawTimer);
+            if (running) {
+                drawCanvas();
+                drawHandler.postDelayed(this, drawTimer);
+            }
         }
     };
 
