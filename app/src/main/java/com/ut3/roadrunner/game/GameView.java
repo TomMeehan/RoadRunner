@@ -30,8 +30,6 @@ import java.util.List;
 
 public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
-    private final static int BASE_GAME_SPEED = 1;
-
     private final DrawThread drawThread;
     private final UpdateThread updateThread;
     private Player player;
@@ -42,6 +40,8 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     private List<GameObject> objects;
 
     private GyroSensor gyroSensor;
+
+    private int gameSpeed = 1;
 
     public GameView(Context context, Point windowSize){
         super(context);
@@ -132,12 +132,18 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    public int getGameSpeed() {
+        return gameSpeed;
+    }
+
     public void setGameSpeed(int multiplier) {
         this.drawThread.setRefreshRate(multiplier);
         this.updateThread.setRefreshRate(multiplier);
+        this.gameSpeed = multiplier;
     }
 
     public void resetGameSpeed() {
+        this.gameSpeed = 1;
         this.drawThread.resetDrawTimer();
         this.updateThread.resetUpdateTimer();
     }

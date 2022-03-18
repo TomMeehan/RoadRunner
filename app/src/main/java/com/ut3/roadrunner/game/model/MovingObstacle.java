@@ -15,8 +15,8 @@ public class MovingObstacle extends Obstacle {
     }
 
     @Override
-    public void move(){
-        super.move();
+    public void move(int speed){
+        super.move(speed);
         if (this.direction.equals(Direction.LEFT)){
             this.x = this.x - (GameObject.STEP * this.speedMultiplier);
         } else {

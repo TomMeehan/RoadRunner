@@ -27,7 +27,7 @@ public class ObjectGenerator {
 
     private final int N_COLUMNS = 4;
 
-    private final int BONUS_SPAWN_THRESHOLD = 90;
+    private final int BONUS_SPAWN_THRESHOLD = 10;
     private final int MOVING_OBSTACLE_SPAWN_THRESHOLD = 90;
 
     private final Point windowSize;
