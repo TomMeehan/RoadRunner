@@ -2,6 +2,7 @@ package com.ut3.roadrunner.game.threads;
 
 import android.graphics.Canvas;
 import android.os.Handler;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.ut3.roadrunner.game.GameView;
@@ -19,6 +20,7 @@ public class DrawThread extends Thread{
     private Runnable doDraw = new Runnable() {
         @Override
         public void run() {
+            Log.d("DRAW", "doDraw");
             drawCanvas();
             drawHandler.postDelayed(this, drawTimer);
         }
@@ -52,7 +54,7 @@ public class DrawThread extends Thread{
 
     @Override
     public void run(){
-        doDraw.run();
+        Log.d("DRAW", "running"); doDraw.run();
     }
 
     public boolean isRunning() {
