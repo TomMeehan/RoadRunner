@@ -44,7 +44,7 @@
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
-        android:text="1. Déplacez la navette en penchant votre appareil pour éviter les obstacles.         \n\n2. Criez &quot;Nitro!&quot; à travers le microphone pour accélérer et gagner un boost de score.         \n\n3. Si vous jouez dans le noir, vous voyagerez de nuit, augmentant la difficulté. Vous obtiendrez le double de points.      \n\n4. Sauvez les astronautes perdus dans l'espace, ils vous seront reconnaissants !"
+        android:text="1. Déplacez la voiture en penchant votre appareil pour éviter les obstacles.         \n\n2. Criez &quot;Nitrooooo!&quot; à travers le microphone pour accélérer et gagner un boost de score.         \n\n3. Si vous jouez dans le noir, vous voyagerez de nuit, augmentant la difficulté. Vous obtiendrez le double de points.      \n\n4. Récupérez les dollars !"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="25sp"
