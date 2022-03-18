@@ -36,15 +36,17 @@ public class MainActivity extends Activity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 0);
         }
 
+        SharedPreferences sharedScore = this.getSharedPreferences("scores", Context.MODE_PRIVATE);
         TextView scoreValue = findViewById(R.id.scoreText);
-        SharedPreferences sharedScore = this.getSharedPreferences("score", Context.MODE_PRIVATE);
-        int score = sharedScore.getInt("score",0);
-        scoreValue.setText(scoreValue.getText()+String.valueOf(score));
+
+        int bestScore = sharedScore.getInt("bestScore",0);
+        scoreValue.setText(scoreValue.getText()+String.valueOf(bestScore));
 
         mediaPlayer = MediaPlayer.create(this, R.raw.elevator);
         mediaPlayer.setVolume(100,100);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+
     }
 
     public void startGame(View view) {

@@ -19,19 +19,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.804" />
 
+
     <ImageView
         android:id="@+id/img"
-        android:layout_width="380dp"
-        android:layout_height="286dp"
-        android:src="@drawable/startscreen"
+        android:layout_width="631dp"
+        android:layout_height="336dp"
+        android:src="@drawable/ic__505049423"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.275" />
-
-
+        app:layout_constraintVertical_bias="0.331" />
 
     <Button
         android:id="@+id/instructions"
@@ -49,7 +48,7 @@
         android:id="@+id/textView"
         android:layout_width="362dp"
         android:layout_height="78dp"
-        android:text="SpaceRunner"
+        android:text="RoadRunner"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="60sp"
@@ -64,7 +63,7 @@
         android:id="@+id/scoreText"
         android:layout_width="253dp"
         android:layout_height="79dp"
-        android:text="Dernier score : "
+        android:text="Meilleur score : "
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="24sp"
