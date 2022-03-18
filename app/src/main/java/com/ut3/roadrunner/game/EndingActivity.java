@@ -24,12 +24,15 @@ public class EndingActivity extends Activity {
 
         setContentView(R.layout.activity_ending);
 
-        SharedPreferences sharedScore = this.getSharedPreferences("score",Context.MODE_PRIVATE);
+        SharedPreferences sharedScore = this.getSharedPreferences("scores",Context.MODE_PRIVATE);
         int score = sharedScore.getInt("score",0);
+        int bestScore = sharedScore.getInt("bestScore", 0);
 
 
         TextView textView = (TextView) findViewById(R.id.finalScoreText);
         textView.setText(textView.getText()+String.valueOf(score));
+        TextView textView2 = (TextView) findViewById(R.id.bestScoreText);
+        textView2.setText(textView2.getText()+String.valueOf(bestScore));
 
     }
 

@@ -141,7 +141,10 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             graphics.setBounds(this.player.getX(), this.player.getY(),this.player.getX() + this.player.getWidth(), this.player.getY() + this.player.getHeight());
             canvas.translate(0, 0);
             Paint score_text = new Paint(Color.rgb(255,0,0));
+            score_text.setColor(Color.WHITE);
             score_text.setTextSize(100);
+
+
             canvas.drawText("Score "+String.valueOf(this.player.getScore()), (this.windowSize.x/3), 100,  score_text);
             graphics.draw(canvas);
         }
@@ -256,9 +259,13 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void endGame(){
-        SharedPreferences sharedScore = getContext().getSharedPreferences("score",Context.MODE_PRIVATE);
+        SharedPreferences sharedScore = getContext().getSharedPreferences("scores",Context.MODE_PRIVATE);
+        int bestScore = sharedScore.getInt("bestScore", 0);
         SharedPreferences.Editor editor = sharedScore.edit();
         editor.putInt("score", player.getScore());
+        if (bestScore < player.getScore()){
+            editor.putInt("bestScore", player.getScore());
+        }
         editor.apply();
         Intent intent = new Intent(getContext(), EndingActivity.class);
         getContext().startActivity(intent);

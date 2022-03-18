@@ -27,11 +27,6 @@ public class GameActivity extends Activity {
         display.getSize(size);
 
         gameView = new GameView(this, size);
-        int score = gameView.getPlayer().getScore();
-        SharedPreferences sharedScore = this.getSharedPreferences("score", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedScore.edit();
-        editor.putInt("score", score);
-        editor.apply();
 
         // Gyro
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
