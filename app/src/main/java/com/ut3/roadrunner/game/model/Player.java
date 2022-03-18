@@ -16,16 +16,20 @@ public class Player extends GameObject {
     public void move(Direction direction){
         switch (direction) {
             case UP:
-                setY(getY() - (STEP * stepMultiplier));
+                if (getY() > 0)
+                    setY(getY() - (STEP * stepMultiplier));
                 break;
             case DOWN:
-                setY(getY() + (STEP * stepMultiplier));
+                if ((getY() + getHeight()) < this.windowSize.y)
+                    setY(getY() + (STEP * stepMultiplier));
                 break;
             case LEFT:
-                setX(getX() - (STEP * stepMultiplier));
+                if (getX() > 0)
+                    setX(getX() - (STEP * stepMultiplier));
                 break;
             case RIGHT:
-                setX(getX() + (STEP * stepMultiplier));
+                if ((getX() + getWidth()) < this.windowSize.x)
+                    setX(getX() + (STEP * stepMultiplier));
                 break;
             }
     }
