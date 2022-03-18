@@ -240,7 +240,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         sm.registerListener(this.gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
 
         Sensor mLightSensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
-        this.lightSensor = new LightSensor(this.player,mLightSensor.getMaximumRange());
+        this.lightSensor = new LightSensor(this.player, windowSize);
         sm.registerListener(this.lightSensor,mLightSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
