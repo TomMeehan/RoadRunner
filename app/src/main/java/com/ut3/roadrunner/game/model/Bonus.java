@@ -13,6 +13,14 @@ public class Bonus extends GameObject{
         this.speedMultiplier = speedMultiplier;
     }
 
+    @Override
+    public void move(){
+        super.move();
+        if (this.y - this.height >= windowSize.y) {
+            this.isAlive = false;
+        }
+    }
+
     public int getScoreMultiplier() {
         return scoreMultiplier;
     }
