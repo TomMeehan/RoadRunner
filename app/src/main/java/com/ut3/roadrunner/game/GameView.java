@@ -56,15 +56,15 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     private MediaRecorder mediaRecorder;
     private File audioInput;
     private Handler micHandler;
-    private final int TIER2_SPEED_AMP = 8000;
-    private final int TIER3_SPEED_AMP = 16000;
+    private final int TIER2_SPEED_AMP = 10000;
+    private final int TIER3_SPEED_AMP = 20000;
     private Runnable micThread = new Runnable() {
         @Override
         public void run() {
             if (mediaRecorder != null) {
                 double amplitude = mediaRecorder.getMaxAmplitude();
                 if (amplitude > TIER3_SPEED_AMP) {
-                    setGameSpeed(2); //TODO voir si on peut multiplier par 3 ?
+                    setGameSpeed(3);
                     Handler handler = new Handler();
                     handler.postDelayed(resetSpeedThread, 10000);
                 } else if (amplitude > TIER2_SPEED_AMP) {
@@ -101,7 +101,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         this.generator = new ObjectGenerator(windowSize);
         this.objects = new LinkedList<>();
         this.player = new Player(R.drawable.ic_car, windowSize.x/2 - 50 , windowSize.y/2  - 50,  generator.getSIZE()/2, generator.getSIZE()/2, windowSize);
-
 
         //Media register (for mic)
         mediaRecorder = new MediaRecorder();
@@ -278,5 +277,11 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             }
             retry = false;
         }
+
+        //On ferme le MediaRecorder et on supprime le fichier créé
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        mediaRecorder = null;
+        audioInput.delete();
     }
 }
