@@ -1,18 +1,12 @@
 package com.ut3.roadrunner.game;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.graphics.Point;
-import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.ut3.roadrunner.R;
 
 public class GameActivity extends Activity {
 
