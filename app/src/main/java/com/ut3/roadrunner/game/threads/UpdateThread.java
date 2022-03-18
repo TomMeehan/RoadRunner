@@ -59,7 +59,7 @@ public class UpdateThread extends Thread {
     public void setRefreshRate(int multiplier){
         if (this.updateTimer == BASE_UPDATE_TIMER){
             this.updateTimer = this.updateTimer * 1/multiplier;
-            this.generationTimer = this.generationTimer/multiplier;
+            this.generationTimer = this.generationTimer/(multiplier+(multiplier/2));
         }
 
     }
