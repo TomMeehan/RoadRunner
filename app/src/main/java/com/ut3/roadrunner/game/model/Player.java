@@ -12,7 +12,6 @@ public class Player extends GameObject {
         this.score = 0;
     }
 
-    @Override
     public void move(Direction direction){
         switch (direction) {
             case UP:

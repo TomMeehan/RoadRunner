@@ -26,23 +26,23 @@ public abstract class GameObject {
         this.isAlive = true;
     }
 
-    public void move(){
-        this.move(Direction.DOWN);
+    public void move(int speed){
+        this.move(Direction.DOWN, speed);
     }
 
-    public void move(Direction direction){
+    public void move(Direction direction, int speed){
         switch (direction){
             case UP:
-                this.y = this.y - STEP;
+                this.y = this.y - (STEP*speed);
                 break;
             case DOWN:
-                this.y = this.y + STEP;
+                this.y = this.y + (STEP*speed);
                 break;
             case LEFT:
-                this.x = this.x - STEP;
+                this.x = this.x - (STEP*speed);
                 break;
             case RIGHT:
-                this.x = this.x + STEP;
+                this.x = this.x + (STEP*speed);
                 break;
         }
     }

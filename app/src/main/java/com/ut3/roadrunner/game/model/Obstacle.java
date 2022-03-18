@@ -9,8 +9,8 @@ public class Obstacle extends GameObject {
     }
 
     @Override
-    public void move(){
-        super.move();
+    public void move(int speed){
+        super.move(speed);
         if (this.y - this.height >= windowSize.y) {
             this.isAlive = false;
         }
