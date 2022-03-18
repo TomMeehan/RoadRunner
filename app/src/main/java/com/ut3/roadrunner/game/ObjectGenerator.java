@@ -67,7 +67,7 @@ public class ObjectGenerator {
     }
 
     private Obstacle generateObstacle(){
-        return new Obstacle(R.drawable.ic_rock,0, 0, SIZE, SIZE);
+        return new Obstacle(R.drawable.ic_rock,0, 0, SIZE, SIZE, windowSize);
     }
 
     private MovingObstacle generateMovingObstacle(){
@@ -81,7 +81,7 @@ public class ObjectGenerator {
         int x = direction.equals(Direction.LEFT) ? 0 - SIZE : this.windowSize.x;
 
 
-        return new MovingObstacle(R.drawable.ic_rock, x,0, SIZE, SIZE, direction, speedMultiplier);
+        return new MovingObstacle(R.drawable.ic_rock, x,0, SIZE, SIZE, direction, speedMultiplier, windowSize);
     }
 
     private Bonus generateBonus(){
@@ -95,7 +95,7 @@ public class ObjectGenerator {
         if (randType == 0) scoreMultiplier = 2;
         else speedMultiplier = 2;
 
-        return new Bonus(R.drawable.ic_rock, 0, 0, SIZE, SIZE, scoreMultiplier, speedMultiplier);
+        return new Bonus(R.drawable.ic_rock, 0, 0, SIZE, SIZE, scoreMultiplier, speedMultiplier, windowSize);
 
     }
 
