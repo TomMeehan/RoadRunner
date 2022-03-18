@@ -6,6 +6,9 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.MediaRecorder;
+import android.os.Handler;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -20,6 +23,8 @@ import com.ut3.roadrunner.game.threads.DrawThread;
 import com.ut3.roadrunner.game.threads.UpdateThread;
 import com.ut3.roadrunner.sensors.GyroSensor;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,6 +40,21 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     private List<GameObject> objects;
 
     private GyroSensor gyroSensor;
+
+    private MediaRecorder mediaRecorder;
+    private File audioInput;
+    private Handler micHandler;
+    private final int MIN_AMPLITUDE = 8000;
+    private final int MAX_AMPLITUDE = 16000;
+    private Runnable micThread = new Runnable() {
+        @Override
+        public void run() {
+            if (mediaRecorder != null) {
+                double amplitude = mediaRecorder.getMaxAmplitude();
+            }
+            micHandler.postDelayed(this, 1000/60);
+        }
+    };
 
     public GameView(Context context, Point windowSize){
         super(context);
@@ -56,6 +76,22 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         this.player = new Player(R.drawable.ic_car, windowSize.x/2 - 50 , windowSize.y/2  - 50,  generator.getSIZE()/2, generator.getSIZE()/2, windowSize);
 
         this.gyroSensor = new GyroSensor(this.player);
+
+        //Media register (for mic)
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        audioInput = new File(context.getFilesDir() + "/ballparty.3gp");
+        mediaRecorder.setOutputFile(audioInput.getAbsolutePath());
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (IOException e) {
+            Log.d("GAME", e.getMessage());
+        }
+        micHandler = new Handler();
+        micThread.run();
 
         //TESTS
         this.setGameSpeed(3);
