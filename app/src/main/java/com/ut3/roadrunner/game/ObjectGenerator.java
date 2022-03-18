@@ -91,11 +91,12 @@ public class ObjectGenerator {
 
         int scoreMultiplier = 1;
         int speedMultiplier = 1;
+        int scoreToAdd = 1000;
 
         if (randType == 0) scoreMultiplier = 2;
         else speedMultiplier = 2;
 
-        return new Bonus(R.drawable.ic_rock, 0, 0, SIZE, SIZE, scoreMultiplier, speedMultiplier);
+        return new Bonus(R.drawable.ic_rock, 0, 0, SIZE, SIZE, scoreMultiplier, speedMultiplier, scoreToAdd);
 
     }
 

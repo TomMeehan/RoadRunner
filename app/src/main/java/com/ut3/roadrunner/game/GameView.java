@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -13,7 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.ut3.roadrunner.R;
+import com.ut3.roadrunner.game.model.Bonus;
 import com.ut3.roadrunner.game.model.GameObject;
+import com.ut3.roadrunner.game.model.MovingObstacle;
 import com.ut3.roadrunner.game.model.Player;
 import com.ut3.roadrunner.game.model.Obstacle;
 import com.ut3.roadrunner.game.threads.DrawThread;
@@ -86,13 +90,54 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void checkCollisions(){
-        // MAXIME IF COLLISION
-        //player.handleCollision(object);
+        Rect playerRect = new Rect(player.getX(), player.getY(), player.getX() + player.getWidth(), player.getY() + player.getHeight());
+        Rect oRect;
+        for (GameObject o : objects) {
+            if (playerRect.intersect(new Rect(o.getX(), o.getY(), o.getX() + o.getWidth(), o.getY() + o.getHeight()))) {
+                this.handleCollision(o);
+                return;
+            }
+        }
+    }
+
+    public void handleCollision(GameObject o) {
+        if (o instanceof Obstacle) {
+
+        } else if (o instanceof MovingObstacle) {
+
+        } else if (o instanceof Bonus) {
+            Bonus bonus = (Bonus) o;
+
+            player.addScore(bonus.getScoreToAdd());
+
+            player.setScoreMultiplier(bonus.getScoreMultiplier());
+            Handler endScoreBonusHandler = new Handler();
+            endScoreBonusHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    player.setScoreMultiplier(Player.BASE_SCORE_MULTIPLIER);
+                }
+            }, Bonus.DURATION);
+
+            this.setGameSpeed(bonus.getSpeedMultiplier());
+            Handler endSpeedBonusHandler = new Handler();
+            endSpeedBonusHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    resetGameSpeed();
+                }
+            }, Bonus.DURATION);
+        }
     }
 
     public void setGameSpeed(int multiplier) {
         this.drawThread.setRefreshRate(multiplier);
         this.updateThread.setRefreshRate(multiplier);
+    }
+
+    public void resetGameSpeed() {
+        this.drawThread.resetDrawTimer();
+        this.updateThread.resetUpdateTimer();
     }
 
     public List<GameObject> getObjects() {

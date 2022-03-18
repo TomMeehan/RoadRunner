@@ -9,12 +9,14 @@ import com.ut3.roadrunner.game.GameView;
 
 public class DrawThread extends Thread{
 
+    private final int BASE_DRAW_TIMER = 1000/60;
+
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
     private Canvas canvas;
     private Handler drawHandler;
     private boolean running;
-    private int drawTimer = 1000/60;
+    private int drawTimer = BASE_DRAW_TIMER;
 
 
     private Runnable doDraw = new Runnable() {
@@ -67,5 +69,9 @@ public class DrawThread extends Thread{
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public void resetDrawTimer() {
+        this.drawTimer = BASE_DRAW_TIMER;
     }
 }

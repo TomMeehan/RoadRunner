@@ -13,8 +13,9 @@ import java.util.Random;
 public class UpdateThread extends Thread {
 
     private final int GENERATION_TIMER = 2000;
+    private final int BASE_UPDATE_TIMER = 1000/20;
 
-    private int updateTimer = 1000/20;
+    private int updateTimer = BASE_UPDATE_TIMER;
 
     private boolean running = false;
     private Handler updateHandler;
@@ -80,5 +81,9 @@ public class UpdateThread extends Thread {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public void resetUpdateTimer() {
+        this.updateTimer = BASE_UPDATE_TIMER;
     }
 }
