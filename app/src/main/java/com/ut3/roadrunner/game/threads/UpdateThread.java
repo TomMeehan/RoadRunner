@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ut3.roadrunner.game.GameView;
 import com.ut3.roadrunner.game.model.Direction;
+import com.ut3.roadrunner.game.model.GameObject;
 
 import java.util.List;
 import java.util.Random;
@@ -38,7 +39,11 @@ public class UpdateThread extends Thread {
         this.updateTimer = this.updateTimer * 1/multiplier;
     }
 
-    private void updateState(){this.gameView.getObj().move(Direction.DOWN);}
+    private void updateState(){
+        for (GameObject obj : gameView.getObjects()){
+            obj.move(Direction.DOWN);
+        }
+    }
 
     @Override
     public void run() {

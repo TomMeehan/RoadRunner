@@ -16,6 +16,10 @@ import com.ut3.roadrunner.game.model.GameObject;
 import com.ut3.roadrunner.game.threads.DrawThread;
 import com.ut3.roadrunner.game.threads.UpdateThread;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
     private final DrawThread drawThread;
@@ -23,7 +27,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
     private Point windowSize;
 
-    private GameObject obj;
+    private List<GameObject> objects;
 
     public GameView(Context context, Point windowSize){
         super(context);
@@ -37,7 +41,10 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         drawThread = new DrawThread(getHolder(), this);
         updateThread = new UpdateThread(this);
 
-        obj = new GameObject(R.drawable.ic_rock, windowSize.x/2, 0, 200, 200);
+        this.objects = new LinkedList<>();
+
+        //TESTS
+        this.objects.add(new GameObject(R.drawable.ic_rock, windowSize.x/2, 0, 200, 200));
         this.setGameSpeed(3);
     }
 
@@ -46,12 +53,14 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
 
         if (canvas != null) {
-            Log.d("GAME", "Canvas is drawing");
             canvas.drawColor(Color.GRAY);
-            VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), obj.getResId(), null);
-            graphics.setBounds(obj.getX() - obj.getWidth()/2, obj.getY(),obj.getX() + obj.getWidth()/2, obj.getY() + obj.getHeight());
-            canvas.translate(0, 0);
-            graphics.draw(canvas);
+            for (GameObject obj : objects){
+                VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), obj.getResId(), null);
+                graphics.setBounds(obj.getX() - obj.getWidth()/2, obj.getY(),obj.getX() + obj.getWidth()/2, obj.getY() + obj.getHeight());
+                canvas.translate(0, 0);
+                graphics.draw(canvas);
+            }
+
         }
     }
 
@@ -60,8 +69,8 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         this.updateThread.setRefreshRate(multiplier);
     }
 
-    public GameObject getObj() {
-        return obj;
+    public List<GameObject> getObjects() {
+        return objects;
     }
 
     @Override
