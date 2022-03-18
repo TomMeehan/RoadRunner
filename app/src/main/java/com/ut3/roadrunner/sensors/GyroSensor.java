@@ -36,7 +36,6 @@ public class GyroSensor implements SensorEventListener {
                 }
                 float x = values[0];
                 float y = values[1];
-                float z = values[2];
 
                 if ( abs(x - firstValues[0]) > 2 && x>firstValues[0] ) {
                    Log.d("Gyro", String.valueOf(Direction.LEFT));
