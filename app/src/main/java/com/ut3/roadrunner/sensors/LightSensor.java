@@ -23,7 +23,7 @@ public class LightSensor implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         float value = sensorEvent.values[0];
-        value = (value/MAX_VALUE*windowSize.y);
+        value = (value/MAX_VALUE*windowSize.y)- windowSize.y/10;
         value = value < windowSize.y/4 ? windowSize.y/4 : value;
         this.player.setVision(value);
     }
