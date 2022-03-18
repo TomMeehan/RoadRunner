@@ -1,6 +1,8 @@
 package com.ut3.roadrunner.game;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -113,15 +115,15 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
     public void handleCollision(GameObject o) {
         if (o instanceof Obstacle) {
-
+            endGame();
         } else if (o instanceof MovingObstacle) {
-
+            endGame();
         } else if (o instanceof Bonus) {
             Bonus bonus = (Bonus) o;
             Log.d("handleCollision", "BONUS");
 
-            /*player.addScore(bonus.getScoreToAdd());
-
+            player.addScore(bonus.getScoreToAdd());
+/*
             player.setScoreMultiplier(bonus.getScoreMultiplier());
             Handler endScoreBonusHandler = new Handler();
             endScoreBonusHandler.postDelayed(new Runnable() {
@@ -130,15 +132,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
                     player.setScoreMultiplier(Player.BASE_SCORE_MULTIPLIER);
                 }
             }, Bonus.DURATION);*/
-
-            this.setGameSpeed(bonus.getSpeedMultiplier());
-            Handler endSpeedBonusHandler = new Handler();
-            endSpeedBonusHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    resetGameSpeed();
-                }
-            }, Bonus.DURATION);
         }
     }
 
@@ -210,4 +203,30 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         sm.unregisterListener(this.lightSensor,sm.getDefaultSensor(Sensor.TYPE_LIGHT));
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void endGame(){
+        SharedPreferences sharedScore = getContext().getSharedPreferences("score",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedScore.edit();
+        editor.putInt("score", player.getScore());
+        editor.apply();
+        Intent intent = new Intent(getContext(), EndingActivity.class);
+        getContext().startActivity(intent);
+
+        boolean retry = true;
+        while (retry) {
+            try {
+                drawThread.setRunning(false);
+                drawThread.join();
+                updateThread.setRunning(false);
+                updateThread.join();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            retry = false;
+        }
+    }
 }
