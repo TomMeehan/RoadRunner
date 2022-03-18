@@ -122,7 +122,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             Bonus bonus = (Bonus) o;
             Log.d("handleCollision", "BONUS");
 
-            /*
+
             player.setScoreMultiplier(bonus.getScoreMultiplier());
             Handler endScoreBonusHandler = new Handler();
             endScoreBonusHandler.postDelayed(new Runnable() {
@@ -130,7 +130,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
                 public void run() {
                     player.setScoreMultiplier(Player.BASE_SCORE_MULTIPLIER);
                 }
-            }, Bonus.DURATION);*/
+            }, Bonus.DURATION);
         }
     }
 
