@@ -20,7 +20,8 @@ public class RulesActivity extends Activity {
         setContentView(R.layout.activity_rules);
     }
 
-    public void startRulesActivity(View view){
+
+    public void startMainActivity(View view){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
