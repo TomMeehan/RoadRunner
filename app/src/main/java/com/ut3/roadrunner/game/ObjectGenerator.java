@@ -20,9 +20,10 @@ import java.util.stream.IntStream;
 public class ObjectGenerator {
 
     private final int OBSTACLE_ASSET = R.drawable.ic_rock;
-    private final int SPEED_BOOST_ASSET = R.drawable.ic_speed_boost;
     private final int SCORE_BOOST_ASSET = R.drawable.ic_dollar;
     private final int MOVING_OBSTACLE_ASSET = R.drawable.ic_zombie;
+
+    private final int BASE_SCORE_MULTIPLIER = 2;
 
 
     private final int N_COLUMNS = 4;
@@ -91,25 +92,7 @@ public class ObjectGenerator {
     }
 
     private Bonus generateBonus(){
-        Random rand = new Random();
-
-        int randType = rand.nextInt(2);
-
-        int scoreMultiplier = 1;
-        int speedMultiplier = 1;
-        int resId;
-        int scoreToAdd = 1000;
-
-        if (randType == 0){
-            scoreMultiplier = 2;
-            resId = SCORE_BOOST_ASSET;
-        }
-        else{
-            speedMultiplier = 2;
-            resId = SPEED_BOOST_ASSET;
-        }
-
-        return new Bonus(resId, 0, 0, SIZE, SIZE, scoreMultiplier, speedMultiplier, scoreToAdd, windowSize);
+        return new Bonus(SCORE_BOOST_ASSET, 0, 0, SIZE, SIZE, BASE_SCORE_MULTIPLIER, windowSize);
 
     }
 
