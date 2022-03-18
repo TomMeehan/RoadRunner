@@ -101,7 +101,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         //Ojects
         this.generator = new ObjectGenerator(windowSize);
         this.objects = new LinkedList<>();
-        this.player = new Player(R.drawable.ic_car, windowSize.x/2 - 50 , windowSize.y/2  - 50,  generator.getSIZE()/2, generator.getSIZE()/2, windowSize);
+        this.player = new Player(R.drawable.ic_black_car, windowSize.x/2 - 50 , windowSize.y/2  - 50,  generator.getSIZE()/2, generator.getSIZE()/2, windowSize);
 
         //Media register (for mic)
         mediaRecorder = new MediaRecorder();
@@ -125,12 +125,12 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        Path path = new Path();
+       Path path = new Path();
         path.addCircle(this.player.getX() + this.player.getWidth()/2,this.player.getY() - this.player.getHeight()/2, this.player.getVision(), Path.Direction.CW);
         canvas.clipPath(path);
 
         if (canvas != null) {
-            canvas.drawColor(Color.DKGRAY);
+            canvas.drawColor(Color.rgb(30,30,30));
             for (GameObject obj : objects){
                 VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), obj.getResId(), null);
                 graphics.setBounds(obj.getX(), obj.getY(),obj.getX() + obj.getWidth(), obj.getY() + obj.getHeight());
@@ -141,7 +141,10 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             graphics.setBounds(this.player.getX(), this.player.getY(),this.player.getX() + this.player.getWidth(), this.player.getY() + this.player.getHeight());
             canvas.translate(0, 0);
             Paint score_text = new Paint(Color.rgb(255,0,0));
+            score_text.setColor(Color.WHITE);
             score_text.setTextSize(100);
+
+
             canvas.drawText("Score "+String.valueOf(this.player.getScore()), (this.windowSize.x/3), 100,  score_text);
             graphics.draw(canvas);
         }
@@ -169,8 +172,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             endGame();
         } else if (o instanceof Bonus) {
             Bonus bonus = (Bonus) o;
-            Log.d("handleCollision", "BONUS");
-
 
             player.setScoreMultiplier(bonus.getScoreMultiplier());
             Handler endScoreBonusHandler = new Handler();
@@ -242,7 +243,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         sm.registerListener(this.gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
 
         Sensor mLightSensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
-        this.lightSensor = new LightSensor(this.player,mLightSensor.getMaximumRange());
+        this.lightSensor = new LightSensor(this.player, windowSize);
         sm.registerListener(this.lightSensor,mLightSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
@@ -256,9 +257,13 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void endGame(){
-        SharedPreferences sharedScore = getContext().getSharedPreferences("score",Context.MODE_PRIVATE);
+        SharedPreferences sharedScore = getContext().getSharedPreferences("scores",Context.MODE_PRIVATE);
+        int bestScore = sharedScore.getInt("bestScore", 0);
         SharedPreferences.Editor editor = sharedScore.edit();
         editor.putInt("score", player.getScore());
+        if (bestScore < player.getScore()){
+            editor.putInt("bestScore", player.getScore());
+        }
         editor.apply();
         Intent intent = new Intent(getContext(), EndingActivity.class);
         getContext().startActivity(intent);
