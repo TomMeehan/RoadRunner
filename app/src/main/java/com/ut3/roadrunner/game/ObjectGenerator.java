@@ -98,6 +98,7 @@ public class ObjectGenerator {
         int scoreMultiplier = 1;
         int speedMultiplier = 1;
         int resId;
+        int scoreToAdd = 1000;
 
         if (randType == 0){
             scoreMultiplier = 2;
@@ -108,7 +109,7 @@ public class ObjectGenerator {
             resId = SPEED_BOOST_ASSET;
         }
 
-        return new Bonus(resId, 0, 0, SIZE, SIZE, scoreMultiplier, speedMultiplier, windowSize);
+        return new Bonus(resId, 0, 0, SIZE, SIZE, scoreMultiplier, speedMultiplier, scoreToAdd, windowSize);
 
     }
 
