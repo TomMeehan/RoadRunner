@@ -37,6 +37,7 @@ public class UpdateThread extends Thread {
         public void run() {
             if (running){
                 updateState();
+                checkCollisions();
                 updateHandler.postDelayed(this, updateTimer);
             }
         }
@@ -62,6 +63,10 @@ public class UpdateThread extends Thread {
             this.canGenerate = false;
             this.generatorHandler.postDelayed(resetCanGenerate, GENERATION_TIMER);
         }
+    }
+
+    private void checkCollisions(){
+        this.gameView.checkCollisions();
     }
 
     @Override

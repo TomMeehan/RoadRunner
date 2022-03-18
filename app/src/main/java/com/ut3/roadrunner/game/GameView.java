@@ -27,8 +27,8 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
     private final DrawThread drawThread;
     private final UpdateThread updateThread;
-
     private Player player;
+
     private Point windowSize;
 
     private ObjectGenerator generator;
@@ -53,8 +53,8 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         //Ojects
         this.generator = new ObjectGenerator(windowSize);
         this.objects = new LinkedList<>();
+        this.player = new Player(R.drawable.ic_purzen_a_cartoon_moon_rocket, windowSize.x/2, windowSize.y/2, 100, 100);
 
-        this.player = new Player(R.drawable.ic_rock, windowSize.x/2, windowSize.y/2, 100, 100);
         this.gyroSensor = new GyroSensor(this.player);
 
         //TESTS
@@ -74,12 +74,20 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
                 canvas.translate(0, 0);
                 graphics.draw(canvas);
             }
-
+            VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), this.player.getResId(), null);
+            graphics.setBounds(this.player.getX() - this.player.getWidth()/2, this.player.getY(),this.player.getX() + this.player.getWidth()/2, this.player.getY() + this.player.getHeight());
+            canvas.translate(0, 0);
+            graphics.draw(canvas);
         }
     }
 
-    public void generateObjects(){
+    public void generateObjects() {
         this.generator.generate(this.objects);
+    }
+
+    public void checkCollisions(){
+        // MAXIME IF COLLISION
+        //player.handleCollision(object);
     }
 
     public void setGameSpeed(int multiplier) {
@@ -123,7 +131,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     public void initializeSensors(SensorManager sm){
         this.gyroSensor = new GyroSensor(this.player);
         Sensor mMagneticField = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sm.registerListener(gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+        sm.registerListener(gyroSensor, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void stopSensors(SensorManager sm){
