@@ -10,8 +10,6 @@ import android.hardware.SensorManager;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
-import android.os.Handler;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -51,15 +49,30 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     private MediaRecorder mediaRecorder;
     private File audioInput;
     private Handler micHandler;
-    private final int MIN_AMPLITUDE = 8000;
-    private final int MAX_AMPLITUDE = 16000;
+    private final int TIER2_SPEED_AMP = 8000;
+    private final int TIER3_SPEED_AMP = 16000;
     private Runnable micThread = new Runnable() {
         @Override
         public void run() {
             if (mediaRecorder != null) {
                 double amplitude = mediaRecorder.getMaxAmplitude();
+                if (amplitude > TIER3_SPEED_AMP) {
+                    setGameSpeed(2); //TODO voir si on peut multiplier par 3 ?
+                    Handler handler = new Handler();
+                    handler.postDelayed(resetSpeedThread, 10000);
+                } else if (amplitude > TIER2_SPEED_AMP) {
+                    setGameSpeed(2);
+                    Handler handler = new Handler();
+                    handler.postDelayed(resetSpeedThread, 10000);
+                }
             }
             micHandler.postDelayed(this, 1000/60);
+        }
+    };
+    private Runnable resetSpeedThread = new Runnable() {
+        @Override
+        public void run() {
+            resetGameSpeed();
         }
     };
 
@@ -89,7 +102,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        audioInput = new File(context.getFilesDir() + "/ballparty.3gp");
+        audioInput = new File(context.getFilesDir() + "/roadrunner.3gp");
         mediaRecorder.setOutputFile(audioInput.getAbsolutePath());
         try {
             mediaRecorder.prepare();
