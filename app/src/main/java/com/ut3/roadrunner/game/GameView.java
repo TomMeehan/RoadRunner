@@ -13,6 +13,7 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.ut3.roadrunner.R;
 import com.ut3.roadrunner.game.model.GameObject;
+import com.ut3.roadrunner.game.model.Obstacle;
 import com.ut3.roadrunner.game.threads.DrawThread;
 import com.ut3.roadrunner.game.threads.UpdateThread;
 
@@ -27,6 +28,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
 
     private Point windowSize;
 
+    private ObjectGenerator generator;
     private List<GameObject> objects;
 
     public GameView(Context context, Point windowSize){
@@ -36,15 +38,19 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         setFocusable(true);
 
+        //Window Size
         this.windowSize = windowSize;
 
+        //Threads
         drawThread = new DrawThread(getHolder(), this);
         updateThread = new UpdateThread(this);
 
+        //Ojects
+        this.generator = new ObjectGenerator(windowSize);
         this.objects = new LinkedList<>();
 
         //TESTS
-        this.objects.add(new GameObject(R.drawable.ic_rock, windowSize.x/2, 0, 200, 200));
+        this.objects.add(new Obstacle(R.drawable.ic_rock, windowSize.x/2, 0, 200, 200));
         this.setGameSpeed(3);
     }
 
@@ -56,12 +62,16 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawColor(Color.GRAY);
             for (GameObject obj : objects){
                 VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), obj.getResId(), null);
-                graphics.setBounds(obj.getX() - obj.getWidth()/2, obj.getY(),obj.getX() + obj.getWidth()/2, obj.getY() + obj.getHeight());
+                graphics.setBounds(obj.getX(), obj.getY(),obj.getX() + obj.getWidth(), obj.getY() + obj.getHeight());
                 canvas.translate(0, 0);
                 graphics.draw(canvas);
             }
 
         }
+    }
+
+    public void generateObjects(){
+        this.generator.generate(this.objects);
     }
 
     public void setGameSpeed(int multiplier) {

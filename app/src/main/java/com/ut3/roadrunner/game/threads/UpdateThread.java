@@ -12,16 +12,23 @@ import java.util.Random;
 
 public class UpdateThread extends Thread {
 
+    private final int GENERATION_TIMER = 2000;
+
     private int updateTimer = 1000/20;
 
     private boolean running = false;
     private Handler updateHandler;
+
+    //Object generation
+    private Handler generatorHandler;
+    private boolean canGenerate = true;
 
     private final GameView gameView;
 
     public UpdateThread(GameView gameView) {
         super();
         this.updateHandler = new Handler();
+        this.generatorHandler = new Handler();
         this.gameView = gameView;
     }
 
@@ -35,13 +42,25 @@ public class UpdateThread extends Thread {
         }
     };
 
+    private Runnable resetCanGenerate = new Runnable() {
+        @Override
+        public void run() {
+            canGenerate = true;
+        }
+    };
+
     public void setRefreshRate(int multiplier){
         this.updateTimer = this.updateTimer * 1/multiplier;
     }
 
     private void updateState(){
         for (GameObject obj : gameView.getObjects()){
-            obj.move(Direction.DOWN);
+            obj.move();
+        }
+        if (this.canGenerate){
+            this.gameView.generateObjects();
+            this.canGenerate = false;
+            this.generatorHandler.postDelayed(resetCanGenerate, GENERATION_TIMER);
         }
     }
 
