@@ -52,7 +52,6 @@ public class GyroSensor implements SensorEventListener {
                     Log.d("Gyro", String.valueOf(Direction.DOWN));
                     this.player.move(Direction.DOWN);
                 }
-
             }
         }
     }

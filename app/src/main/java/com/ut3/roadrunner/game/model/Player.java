@@ -1,52 +1,31 @@
 package com.ut3.roadrunner.game.model;
 
-import android.util.Log;
-
-import com.ut3.roadrunner.game.GameView;
-
 public class Player extends GameObject {
 
     private int score;
-    private final GameView gameView;
-    private int STEP = 10;
+    private int stepMultiplier = 2;
 
-    public Player(int resId, int x, int y, int width, int height, GameView gameView) {
+    public Player(int resId, int x, int y, int width, int height) {
         super(resId, x, y, width, height);
         this.score = 0;
-        this.gameView = gameView;
     }
 
     @Override
     public void move(Direction direction){
-        GameObject object = null; /*isInCollision() == null*/
-        if (object != null) {
-            handleCollision(object);
-            this.gameView.getObjects().remove(object);
-        }
         switch (direction) {
             case UP:
-                setY(getY() - STEP);
+                setY(getY() - (STEP * stepMultiplier));
                 break;
             case DOWN:
-                setY(getY() + STEP);
+                setY(getY() + (STEP * stepMultiplier));
                 break;
             case LEFT:
-                setX(getX() - STEP);
+                setX(getX() - (STEP * stepMultiplier));
                 break;
             case RIGHT:
-                setX(getX() + STEP);
+                setX(getX() + (STEP * stepMultiplier));
                 break;
             }
-    }
-
-    private void handleCollision(GameObject object) {
-        if (object instanceof Bonus){
-            // Bonus added
-            Log.d("BONUS", "Bonus added");
-        } else if (object instanceof Obstacle) {
-            // Game lost
-            Log.d("END", "you lost the game");
-        }
     }
 
     public int getScore(){

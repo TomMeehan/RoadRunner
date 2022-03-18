@@ -47,7 +47,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         updateThread = new UpdateThread(this);
 
         this.objects = new LinkedList<>();
-        this.player = new Player(R.drawable.ic_purzen_a_cartoon_moon_rocket, windowSize.x/2, windowSize.y/2, 100, 100, this);
+        this.player = new Player(R.drawable.ic_purzen_a_cartoon_moon_rocket, windowSize.x/2, windowSize.y/2, 100, 100);
 
         this.gyroSensor = new GyroSensor(this.player);
 
@@ -73,6 +73,11 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
             canvas.translate(0, 0);
             graphics.draw(canvas);
         }
+    }
+
+    public void checkCollisions(){
+        // MAXIME IF COLLISION
+        //player.handleCollision(object);
     }
 
     public void setGameSpeed(int multiplier) {

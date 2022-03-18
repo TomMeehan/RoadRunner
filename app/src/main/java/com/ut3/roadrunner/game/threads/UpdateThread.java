@@ -30,6 +30,7 @@ public class UpdateThread extends Thread {
         public void run() {
             if (running){
                 updateState();
+                checkCollisions();
                 updateHandler.postDelayed(this, updateTimer);
             }
         }
@@ -43,6 +44,10 @@ public class UpdateThread extends Thread {
         for (GameObject obj : gameView.getObjects()){
             obj.move(Direction.DOWN);
         }
+    }
+
+    private void checkCollisions(){
+        this.gameView.checkCollisions();
     }
 
     @Override
