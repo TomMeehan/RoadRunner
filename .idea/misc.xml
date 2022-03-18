@@ -3,9 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="app/src/main/res/layout/activity_game.xml" value="0.18177083333333333" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.18177083333333333" />
-        <entry key="app/src/main/res/layout/activity_rules.xml" value="0.33" />
+        <entry key="..\:/Users/Tom/AndroidStudioProjects/RoadRunner/app/src/main/res/drawable/ic_boost.xml" value="0.124" />
+        <entry key="..\:/Users/Tom/AndroidStudioProjects/RoadRunner/app/src/main/res/drawable/ic_speed_boost.xml" value="0.124" />
       </map>
     </option>
   </component>

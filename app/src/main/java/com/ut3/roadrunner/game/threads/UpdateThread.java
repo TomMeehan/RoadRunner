@@ -6,9 +6,11 @@ import android.util.Log;
 import com.ut3.roadrunner.game.GameView;
 import com.ut3.roadrunner.game.model.Direction;
 import com.ut3.roadrunner.game.model.GameObject;
+import com.ut3.roadrunner.game.model.MovingObstacle;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class UpdateThread extends Thread {
 
@@ -38,6 +40,7 @@ public class UpdateThread extends Thread {
             if (running){
                 updateState();
                 checkCollisions();
+                destroyDeadObjects();
                 updateHandler.postDelayed(this, updateTimer);
             }
         }
@@ -67,6 +70,13 @@ public class UpdateThread extends Thread {
 
     private void checkCollisions(){
         this.gameView.checkCollisions();
+    }
+
+    private void destroyDeadObjects(){
+        this.gameView.setObjects(this.gameView.getObjects()
+                                                .stream()
+                                                .filter(gameObject -> gameObject.isAlive())
+                                                .collect(Collectors.toList()));
     }
 
     @Override
