@@ -62,7 +62,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         //Ojects
         this.generator = new ObjectGenerator(windowSize);
         this.objects = new LinkedList<>();
-        this.player = new Player(R.drawable.ic_car, windowSize.x/2 - 50 , windowSize.y/2  - 50,  generator.getSIZE()/2, generator.getSIZE()/2, windowSize);
+        this.player = new Player(R.drawable.ic_black_car, windowSize.x/2 - 50 , windowSize.y/2  - 50,  generator.getSIZE()/2, generator.getSIZE()/2, windowSize);
 
         this.gyroSensor = new GyroSensor(this.player);
 
@@ -74,7 +74,7 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
 
         if (canvas != null) {
-            canvas.drawColor(Color.DKGRAY);
+            canvas.drawColor(Color.rgb(30,30,30));
             for (GameObject obj : objects){
                 VectorDrawableCompat graphics = VectorDrawableCompat.create(getContext().getResources(), obj.getResId(), null);
                 graphics.setBounds(obj.getX(), obj.getY(),obj.getX() + obj.getWidth(), obj.getY() + obj.getHeight());
