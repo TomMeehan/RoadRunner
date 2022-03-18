@@ -8,6 +8,7 @@ public class Player extends GameObject {
 
     private int score;
     private final GameView gameView;
+    private int STEP = 10;
 
     public Player(int resId, int x, int y, int width, int height, GameView gameView) {
         super(resId, x, y, width, height);
@@ -18,25 +19,24 @@ public class Player extends GameObject {
     @Override
     public void move(Direction direction){
         GameObject object = null; /*isInCollision() == null*/
-        if (object == null) {
-            switch (direction) {
-                case UP:
-                    setY(getY() - STEP);
-                    break;
-                case DOWN:
-                    setY(getY() + STEP);
-                    break;
-                case LEFT:
-                    setX(getX() - STEP);
-                    break;
-                case RIGHT:
-                    setX(getX() + STEP);
-                    break;
-            }
-        } else {
+        if (object != null) {
             handleCollision(object);
             this.gameView.getObjects().remove(object);
         }
+        switch (direction) {
+            case UP:
+                setY(getY() - STEP);
+                break;
+            case DOWN:
+                setY(getY() + STEP);
+                break;
+            case LEFT:
+                setX(getX() - STEP);
+                break;
+            case RIGHT:
+                setX(getX() + STEP);
+                break;
+            }
     }
 
     private void handleCollision(GameObject object) {

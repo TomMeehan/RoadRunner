@@ -28,7 +28,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
     private final UpdateThread updateThread;
     private Player player;
 
-    private Player player;
     private Point windowSize;
 
     private List<GameObject> objects;
@@ -50,7 +49,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         this.objects = new LinkedList<>();
         this.player = new Player(R.drawable.ic_purzen_a_cartoon_moon_rocket, windowSize.x/2, windowSize.y/2, 100, 100, this);
 
-        this.player = new Player(R.drawable.ic_rock, windowSize.x/2, windowSize.y/2, 100, 100);
         this.gyroSensor = new GyroSensor(this.player);
 
         //TESTS
