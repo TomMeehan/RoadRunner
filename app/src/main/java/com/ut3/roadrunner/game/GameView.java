@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
@@ -118,7 +119,6 @@ public class GameView  extends SurfaceView implements SurfaceHolder.Callback {
         micHandler = new Handler();
         micThread.run();
 
-        //TESTS
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,9 @@ import com.ut3.roadrunner.game.GameActivity;
 import com.ut3.roadrunner.game.RulesActivity;
 
 public class MainActivity extends Activity {
+
+
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,11 @@ public class MainActivity extends Activity {
         SharedPreferences sharedScore = this.getSharedPreferences("score", Context.MODE_PRIVATE);
         int score = sharedScore.getInt("score",0);
         scoreValue.setText(scoreValue.getText()+String.valueOf(score));
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.elevator);
+        mediaPlayer.setVolume(100,100);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     public void startGame(View view) {
@@ -46,6 +55,18 @@ public class MainActivity extends Activity {
     public void startRulesActivity(View view) {
         Intent intent = new Intent(this, RulesActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop(){
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        super.onStop();
     }
 
 }
